@@ -1,27 +1,47 @@
 import streamlit as st
-import pandas as pd
-import fastbook
-from fastbook import *
+from fastai.vision.all import *
+from PIL import Image
+import gdown
 
-# 제목
-st.title("CSV 파일 업로드 및 데이터 표시")
+# Google Drive 파일 ID
+# 파일 ID는 공유 링크에서 추출 가능합니다.
+# 예: https://drive.google.com/file/d/your_google_drive_file_id/view?usp=sharing
+# 이 링크에서 'your_google_drive_file_id' 부분을 복사하면 됩니다.
+file_id = '1NKIhMhUeRC0vPptHwT4it-LMYhamVDyi'
+
+# Google Drive에서 파일 다운로드 함수
+@st.cache(allow_output_mutation=True)
+def load_model_from_drive(file_id):
+    url = f'https://drive.google.com/uc?id={file_id}'
+    output = 'model.pkl'
+    gdown.download(url, output, quiet=False)
+    
+    # Fastai 모델 로드
+    learner = load_learner(output)
+    return learner
+
+# Streamlit 페이지 제목
+st.title("이미지 분류기 (Fastai) - Google Drive 모델 사용")
+
+# 모델 로드
+st.write("모델을 로드 중입니다. 잠시만 기다려주세요...")
+learner = load_model_from_drive(file_id)
+st.success("모델이 성공적으로 로드되었습니다!")
 
 # 파일 업로드 컴포넌트
-uploaded_file = st.file_uploader("CSV 파일을 업로드하세요", type="csv")
+uploaded_file = st.file_uploader("이미지를 업로드하세요", type=["jpg", "png", "jpeg"])
 
-# 파일이 업로드되었는지 확인
 if uploaded_file is not None:
-    # 판다스를 이용해 파일 읽기
-    df = pd.read_csv(uploaded_file)
-    
-    # 데이터프레임 표시
-    st.write("업로드된 CSV 파일의 데이터:")
-    st.dataframe(df)
-    
-    # 기본 통계 정보 표시
-    st.write("기본 통계 정보:")
-    st.write(df.describe())
-    
-    # 데이터프레임의 정보 출력
-    st.write("데이터프레임의 정보:")
-    st.write(df.info())
+    # 업로드된 이미지 보여주기
+    image = Image.open(uploaded_file)
+    st.image(image, caption="업로드된 이미지", use_column_width=True)
+
+    # Fastai에서 예측을 위해 이미지를 처리
+    img = PILImage.create(uploaded_file)
+
+    # 예측 수행
+    prediction, _, probs = learner.predict(img)
+
+    # 결과 출력
+    st.write(f"예측된 클래스: {prediction}")
+    st.write(f"확률: {probs.max():.4f}")
