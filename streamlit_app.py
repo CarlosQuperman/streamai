@@ -43,7 +43,18 @@ if uploaded_file is not None:
     # 결과 출력
     st.write(f"예측된 클래스: {prediction}")
 
-    # 각 라벨과 확률을 텍스트로 출력
-    st.write("클래스별 확률:")
+    # 클래스별 확률을 HTML과 CSS로 시각화
+    st.markdown("<h3>클래스별 확률:</h3>", unsafe_allow_html=True)
+
     for label, prob in zip(labels, probs):
-        st.write(f"{label}: {prob:.4f}")
+        # HTML 및 CSS로 확률을 시각화
+        st.markdown(f"""
+            <div style="background-color: #f0f0f0; border-radius: 5px; padding: 5px; margin: 5px 0;">
+                <strong style="color: #333;">{label}:</strong>
+                <div style="background-color: #d3d3d3; border-radius: 5px; width: 100%; padding: 2px;">
+                    <div style="background-color: #4CAF50; width: {prob*100}%; padding: 5px 0; border-radius: 5px; text-align: center; color: white;">
+                        {prob:.4f}
+                    </div>
+                </div>
+            </div>
+        """, unsafe_allow_html=True)
