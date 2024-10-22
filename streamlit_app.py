@@ -2,7 +2,6 @@ import streamlit as st
 from fastai.vision.all import *
 from PIL import Image
 import gdown
-import plotly.graph_objects as go
 
 # Google Drive 파일 ID
 file_id = '1NKIhMhUeRC0vPptHwT4it-LMYhamVDyi'
@@ -44,18 +43,7 @@ if uploaded_file is not None:
     # 결과 출력
     st.write(f"예측된 클래스: {prediction}")
 
-    # 확률 막대 그래프 생성
-    fig = go.Figure([go.Bar(x=labels, y=probs, text=[f'{p:.4f}' for p in probs], 
-                            textposition='auto', marker_color='lightblue')])
-
-    # 레이아웃 설정
-    fig.update_layout(
-        title='분류 확률',
-        xaxis_title='클래스',
-        yaxis_title='확률',
-        yaxis_range=[0, 1],  # 확률이 0에서 1 사이에 있으므로
-        plot_bgcolor='rgba(0,0,0,0)'  # 배경 투명하게 설정
-    )
-
-    # 그래프 표시
-    st.plotly_chart(fig)
+    # 각 라벨과 확률을 텍스트로 출력
+    st.write("클래스별 확률:")
+    for label, prob in zip(labels, probs):
+        st.write(f"{label}: {prob:.4f}")
