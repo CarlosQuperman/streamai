@@ -1,14 +1,12 @@
 import streamlit as st
-import cv2
 from fastai.vision.all import *
 from PIL import Image
-import numpy as np
-import time
+import gdown
 
 # Google Drive 파일 ID
 file_id = '1NKIhMhUeRC0vPptHwT4it-LMYhamVDyi'
 
-# Google Drive에서 파일 다운로드 함수 (gdown 사용 가능)
+# Google Drive에서 파일 다운로드 함수
 @st.cache(allow_output_mutation=True)
 def load_model_from_drive(file_id):
     url = f'https://drive.google.com/uc?id={file_id}'
@@ -28,37 +26,35 @@ st.success("모델이 성공적으로 로드되었습니다!")
 labels = learner.dls.vocab
 st.title(f"이미지 분류기 (Fastai) - 분류 라벨: {', '.join(labels)}")
 
-# 카메라 스트림 시작
-st.write("카메라를 통한 실시간 분류입니다.")
+# 파일 업로드 컴포넌트 (jpg, png, jpeg, webp, tiff 지원)
+uploaded_file = st.file_uploader("이미지를 업로드하세요", type=["jpg", "png", "jpeg", "webp", "tiff"])
 
-# OpenCV로 카메라 접근
-cap = cv2.VideoCapture(0)  # 기본 카메라 장치 사용 (0번 카메라)
+if uploaded_file is not None:
+    # 업로드된 이미지 보여주기
+    image = Image.open(uploaded_file)
+    st.image(image, caption="업로드된 이미지", use_column_width=True)
 
-# 카메라에서 프레임을 주기적으로 읽어오기
-while cap.isOpened():
-    ret, frame = cap.read()  # 카메라에서 프레임 읽기
-    if not ret:
-        st.error("카메라에 접근할 수 없습니다.")
-        break
-    
-    # 프레임을 PIL 이미지로 변환
-    frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)  # OpenCV는 BGR 포맷, Fastai는 RGB 사용
-    img = PILImage.create(frame_rgb)  # Fastai가 처리할 수 있는 이미지 형식으로 변환
+    # Fastai에서 예측을 위해 이미지를 처리
+    img = PILImage.create(uploaded_file)
 
     # 예측 수행
     prediction, _, probs = learner.predict(img)
 
-    # 카메라 화면 출력
-    st.image(frame_rgb, caption=f"실시간 카메라 - 예측: {prediction}", use_column_width=True)
+    # 결과 출력
+    st.write(f"예측된 클래스: {prediction}")
 
-    # 확률 출력
-    st.write("클래스별 확률:")
+    # 클래스별 확률을 HTML과 CSS로 시각화
+    st.markdown("<h3>클래스별 확률:</h3>", unsafe_allow_html=True)
+
     for label, prob in zip(labels, probs):
-        st.write(f"{label}: {prob:.4f}")
-
-    # 프레임 사이의 지연 설정 (1초마다 업데이트)
-    time.sleep(1)  # 1초마다 프레임 업데이트
-
-# 카메라 자원 해제
-cap.release()
-cv2.destroyAllWindows()
+        # HTML 및 CSS로 확률을 시각화
+        st.markdown(f"""
+            <div style="background-color: #f0f0f0; border-radius: 5px; padding: 5px; margin: 5px 0;">
+                <strong style="color: #333;">{label}:</strong>
+                <div style="background-color: #d3d3d3; border-radius: 5px; width: 100%; padding: 2px;">
+                    <div style="background-color: #4CAF50; width: {prob*100}%; padding: 5px 0; border-radius: 5px; text-align: center; color: white;">
+                        {prob:.4f}
+                    </div>
+                </div>
+            </div>
+        """, unsafe_allow_html=True)
