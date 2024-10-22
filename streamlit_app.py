@@ -1,5 +1,7 @@
 import streamlit as st
 import pandas as pd
+import fastbook
+from fastbook import *
 
 # 제목
 st.title("CSV 파일 업로드 및 데이터 표시")
