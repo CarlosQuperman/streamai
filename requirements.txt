@@ -4,3 +4,4 @@ numpy
 plotly
 fastai2
 fastbook
+Pillow
