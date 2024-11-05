@@ -59,12 +59,12 @@ if uploaded_file is not None:
                 </div>
             </div>
         """, unsafe_allow_html=True)
-    prediction = prediction.strip()
+    prediction_str = str(prediction)
     st.write(prediction,type(prediction))
-    if prediction == "짜장면":
+    if prediction_str == "짜장면":
         st.write("맛있는 짜장면")
-    elif prediction == "중국식 냉면":
+    elif prediction_str == "중국식 냉면":
         st.write("중냉 짱짱맨")
-    elif prediction == "짬뽕":
+    elif prediction_str == "짬뽕":
         st.write("짬뽕 띵호야")
 
