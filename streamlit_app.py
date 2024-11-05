@@ -24,7 +24,7 @@ st.success("모델이 성공적으로 로드되었습니다!")
 
 # 모델의 분류 라벨 출력
 labels = learner.dls.vocab
-st.write(labels)
+#st.write(labels)
 st.title(f"이미지 분류기 (Fastai) - 분류 라벨: {', '.join(labels)}")
 
 # 파일 업로드 컴포넌트 (jpg, png, jpeg, webp, tiff 지원)
@@ -59,3 +59,11 @@ if uploaded_file is not None:
                 </div>
             </div>
         """, unsafe_allow_html=True)
+   
+    if prediction == "짜장면":
+        st.write("맛있는 짜장면")
+    elif prediction == "중국식 냉면":
+        st.write("중냉 짱짱맨")
+    elif prediction == "짬뽕":
+        st.write("짬뽕 띵호야")
+
