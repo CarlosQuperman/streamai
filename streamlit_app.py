@@ -60,7 +60,7 @@ if uploaded_file is not None:
             </div>
         """, unsafe_allow_html=True)
     prediction = prediction.strip()
-    st.write(prediction)
+    st.write(prediction,type(prediction))
     if prediction == "짜장면":
         st.write("맛있는 짜장면")
     elif prediction == "중국식 냉면":
