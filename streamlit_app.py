@@ -42,20 +42,18 @@ if uploaded_file is not None:
     prediction, _, probs = learner.predict(img)
 
     # 결과 출력
-    st.write(f"예측된 클래스: {prediction},짜장면")
+    st.write(f"예측된 클래스: {prediction}")
 
-    if prediction == labels[1] :
-        st.write("짜장면은 맛있어!!")
 
     # 클래스별 확률을 HTML과 CSS로 시각화
     st.markdown("<h3>클래스별 확률:</h3>", unsafe_allow_html=True)
 
-    if prediction == "짜장면":
-        st.write("맛있는 짜장면")
-    elif prediction == "중국식 냉면":
-        st.write("중냉 짱짱맨")
-    elif prediction == "짬뽕":
-        st.write("짬뽕 띵호야")
+    if prediction == lables[0]:
+        st.write("중냉 꿋굿")
+    elif prediction == labels[1]:
+        st.write("짜장면은 굿")
+    elif prediction == lables[2]:
+        st.write("짬뽕은 맵지만 맛있어!!")
 
     for label, prob in zip(labels, probs):
         # HTML 및 CSS로 확률을 시각화
