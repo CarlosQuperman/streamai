@@ -42,7 +42,7 @@ if uploaded_file is not None:
     prediction, _, probs = learner.predict(img)
 
     # 결과 출력
-    st.write(f"예측된 클래스: {prediction}")
+    st.write(f"예측된 클래스: {prediction},짜장면")
 
     # 클래스별 확률을 HTML과 CSS로 시각화
     st.markdown("<h3>클래스별 확률:</h3>", unsafe_allow_html=True)
