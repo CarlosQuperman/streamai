@@ -34,25 +34,51 @@ def display_left_content(image, prediction, probs, labels):
                 </div>
         """, unsafe_allow_html=True)
 
-def display_right_content(labels):
+def display_right_content(labels, prediction):
     st.write("### 오른쪽: 동적 분류 결과")
     cols = st.columns(3)
-    
-    # 1st Row - Images based on labels
-    for i, label in enumerate(labels[:3]):
-        with cols[i]:
-            st.image(f"https://via.placeholder.com/150?text={label}", caption=f"이미지: {label}", use_column_width=True)
 
-    # 2nd Row - YouTube Videos based on labels
-    for i, label in enumerate(labels[:3]):
-        with cols[i]:
-            st.video("https://www.youtube.com/watch?v=3JZ_D3ELwOQ", start_time=0)
-            st.caption(f"유튜브: {label}")
-
-    # 3rd Row - Text based on labels
-    for i, label in enumerate(labels[:3]):
-        with cols[i]:
-            st.write(f"{label} 관련 텍스트 내용입니다.")
+    # 동적 콘텐츠를 분류 결과에 따라 다르게 생성
+    if prediction == labels[0]:  # 예시: 첫 번째 라벨에 대한 조건
+        # 1st Row - Images based on labels
+        for i in range(3):
+            with cols[i]:
+                st.image(f"https://via.placeholder.com/150?text={labels[0]}", caption=f"이미지: {labels[0]}", use_column_width=True)
+        # 2nd Row - YouTube Videos based on labels
+        for i in range(3):
+            with cols[i]:
+                st.video("https://www.youtube.com/watch?v=3JZ_D3ELwOQ", start_time=0)
+                st.caption(f"유튜브: {labels[0]}")
+        # 3rd Row - Text based on labels
+        for i in range(3):
+            with cols[i]:
+                st.write(f"{labels[0]} 관련 텍스트 내용입니다.")
+    elif prediction == labels[1]:  # 예시: 두 번째 라벨에 대한 조건
+        # 1st Row - Images based on labels
+        for i in range(3):
+            with cols[i]:
+                st.image(f"https://via.placeholder.com/150?text={labels[1]}", caption=f"이미지: {labels[1]}", use_column_width=True)
+        # 2nd Row - YouTube Videos based on labels
+        for i in range(3):
+            with cols[i]:
+                st.video("https://www.youtube.com/watch?v=2Vv-BfVoq4g", start_time=0)
+                st.caption(f"유튜브: {labels[1]}")
+        # 3rd Row - Text based on labels
+        for i in range(3):
+            with cols[i]:
+                st.write(f"{labels[1]} 관련 텍스트 내용입니다.")
+    else:
+        # Default content for other labels
+        for i in range(3):
+            with cols[i]:
+                st.image(f"https://via.placeholder.com/150?text={prediction}", caption=f"이미지: {prediction}", use_column_width=True)
+        for i in range(3):
+            with cols[i]:
+                st.video("https://www.youtube.com/watch?v=3JZ_D3ELwOQ", start_time=0)
+                st.caption(f"유튜브: {prediction}")
+        for i in range(3):
+            with cols[i]:
+                st.write(f"{prediction} 관련 텍스트 내용입니다.")
 
 # 모델 로드
 st.write("모델을 로드 중입니다. 잠시만 기다려주세요...")
@@ -76,4 +102,4 @@ if uploaded_file is not None:
         display_left_content(image, prediction, probs, labels)
 
     with right_column:
-        display_right_content(labels)
+        display_right_content(labels, prediction)
